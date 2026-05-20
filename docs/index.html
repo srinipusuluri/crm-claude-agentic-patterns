@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Agentic Patterns for CRM</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#060612;color:#e2e8f0;min-height:100vh}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0d0d2b 0%,#1a0a3d 40%,#0d1f3c 100%);padding:52px 24px 40px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,#7c3aed18 0%,transparent 70%)}
+.hero-badge{display:inline-block;padding:5px 16px;border-radius:20px;border:1px solid #7c3aed66;background:#7c3aed15;color:#a78bfa;font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#c084fc,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;margin-bottom:12px}
+.hero p{color:#64748b;font-size:1rem;max-width:560px;margin:0 auto 28px}
+.hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-n{font-size:1.8rem;font-weight:800;color:#c084fc}
+.stat-l{font-size:0.72rem;color:#475569;text-transform:uppercase;letter-spacing:1px}
+
+/* FILTER BAR */
+.filter-bar{background:#0a0a1e;border-bottom:1px solid #1e1e3f;padding:16px 20px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;position:sticky;top:0;z-index:100}
+.pill{padding:7px 16px;border-radius:20px;border:1px solid #1e1e3f;background:transparent;color:#64748b;cursor:pointer;font-size:0.78rem;font-weight:600;transition:all .2s}
+.pill:hover{border-color:#7c3aed55;color:#a78bfa}
+.pill.on{background:linear-gradient(135deg,#7c3aed,#4f46e5);border-color:transparent;color:#fff}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;max-width:1200px;margin:32px auto;padding:0 20px 60px}
+
+/* CARD */
+.card{background:#0e0e24;border:1px solid #1a1a38;border-radius:18px;overflow:hidden;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 40px #7c3aed22}
+.card-top{padding:22px 22px 16px;flex:1}
+.card-bottom{padding:16px 22px 22px;border-top:1px solid #1a1a38;background:#0b0b1e}
+
+/* card header */
+.card-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.card-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.card-meta{}
+.card-meta h3{font-size:1rem;font-weight:700;color:#e2e8f0;line-height:1.3;margin-bottom:4px}
+.pattern-tag{display:inline-block;font-size:0.67rem;padding:2px 9px;border-radius:10px;font-weight:700;letter-spacing:.5px}
+
+/* use case label */
+.uc-label{font-size:0.68rem;text-transform:uppercase;letter-spacing:1.5px;color:#475569;margin-bottom:6px;font-weight:600}
+.uc-title{font-size:0.92rem;color:#94a3b8;line-height:1.5;margin-bottom:14px}
+
+/* flow */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.fn{padding:5px 10px;border-radius:7px;font-size:0.68rem;font-weight:700;white-space:nowrap}
+.fa{color:#7c3aed;font-size:0.9rem}
+
+/* detail rows */
+.detail-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:7px}
+.detail-row:last-child{margin-bottom:0}
+.dr-icon{font-size:0.85rem;margin-top:1px;flex-shrink:0}
+.dr-text{font-size:0.78rem;color:#64748b;line-height:1.4}
+.dr-text strong{color:#94a3b8}
+
+/* bottom badges */
+.bottom-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.complexity-bar{display:flex;gap:3px;align-items:center}
+.cb-label{font-size:0.68rem;color:#475569;margin-right:4px}
+.cb-dot{width:8px;height:8px;border-radius:50%}
+.cb-dot.fill{background:#7c3aed}
+.cb-dot.empty{background:#1e1e40}
+.impact-badge{font-size:0.68rem;padding:3px 10px;border-radius:10px;font-weight:700}
+
+/* color themes */
+.t-purple .card-icon{background:#2d1b6933;border:1px solid #7c3aed44}
+.t-purple .pattern-tag{background:#2d1b6966;color:#c084fc;border:1px solid #7c3aed33}
+.t-purple .fn.main{background:#2d1b69;color:#c084fc;border:1px solid #7c3aed}
+.t-purple .fn.sub{background:#1a1a38;color:#94a3b8}
+
+.t-blue .card-icon{background:#1e3a5f33;border:1px solid #3b82f644}
+.t-blue .pattern-tag{background:#1e3a5f66;color:#93c5fd;border:1px solid #3b82f633}
+.t-blue .fn.main{background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6}
+.t-blue .fn.sub{background:#1a1a38;color:#94a3b8}
+
+.t-green .card-icon{background:#14532d33;border:1px solid #22c55e44}
+.t-green .pattern-tag{background:#14532d66;color:#86efac;border:1px solid #22c55e33}
+.t-green .fn.main{background:#14532d;color:#86efac;border:1px solid #22c55e}
+.t-green .fn.sub{background:#1a1a38;color:#94a3b8}
+
+.t-orange .card-icon{background:#43140733;border:1px solid #f9731644}
+.t-orange .pattern-tag{background:#43140766;color:#fdba74;border:1px solid #f9731633}
+.t-orange .fn.main{background:#431407;color:#fdba74;border:1px solid #f97316}
+.t-orange .fn.sub{background:#1a1a38;color:#94a3b8}
+
+.t-teal .card-icon{background:#134e4a33;border:1px solid #14b8a644}
+.t-teal .pattern-tag{background:#134e4a66;color:#5eead4;border:1px solid #14b8a633}
+.t-teal .fn.main{background:#134e4a;color:#5eead4;border:1px solid #14b8a6}
+.t-teal .fn.sub{background:#1a1a38;color:#94a3b8}
+
+.t-pink .card-icon{background:#4a044e33;border:1px solid #e879f944}
+.t-pink .pattern-tag{background:#4a044e66;color:#f0abfc;border:1px solid #e879f933}
+.t-pink .fn.main{background:#4a044e;color:#f0abfc;border:1px solid #e879f9}
+.t-pink .fn.sub{background:#1a1a38;color:#94a3b8}
+
+.t-red .card-icon{background:#450a0a33;border:1px solid #ef444444}
+.t-red .pattern-tag{background:#450a0a66;color:#fca5a5;border:1px solid #ef444433}
+.t-red .fn.main{background:#450a0a;color:#fca5a5;border:1px solid #ef4444}
+.t-red .fn.sub{background:#1a1a38;color:#94a3b8}
+
+.impact-high{background:#14532d44;color:#86efac;border:1px solid #22c55e55}
+.impact-med{background:#43140744;color:#fdba74;border:1px solid #f9731655}
+.impact-crit{background:#450a0a44;color:#fca5a5;border:1px solid #ef444455}
+
+.hidden{display:none!important}
+
+@media(max-width:600px){
+  .hero h1{font-size:1.6rem}
+  .hero-stats{gap:18px}
+  .grid{grid-template-columns:1fr;padding:0 12px 40px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Claude × CRM Intelligence</div>
+  <h1>Agentic Patterns<br>for CRM</h1>
+  <p>Every major AI agentic pattern mapped to real CRM workflows — use cases, flows, and implementation details.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">12</div><div class="stat-l">Use Cases</div></div>
+    <div class="stat"><div class="stat-n">8</div><div class="stat-l">Patterns</div></div>
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">CRM Domains</div></div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <button class="pill on" onclick="filter('all',this)">All</button>
+  <button class="pill" onclick="filter('sales',this)">💼 Sales</button>
+  <button class="pill" onclick="filter('support',this)">🎧 Support</button>
+  <button class="pill" onclick="filter('marketing',this)">📣 Marketing</button>
+  <button class="pill" onclick="filter('ops',this)">⚙️ Ops</button>
+  <button class="pill" onclick="filter('analytics',this)">📊 Analytics</button>
+</div>
+
+<div class="grid" id="grid">
+
+  <!-- 1. Lead Scoring - ReAct -->
+  <div class="card t-purple" data-cat="sales">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">🎯</div>
+        <div class="card-meta">
+          <h3>Intelligent Lead Scoring</h3>
+          <span class="pattern-tag">⚙️ ReAct</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Sales</div>
+      <div class="uc-title">Claude scores inbound leads in real time by reasoning over enriched data, then acts on each insight — routing, tagging, and alerting reps automatically.</div>
+      <div class="flow">
+        <div class="fn main">New Lead</div><div class="fa">→</div>
+        <div class="fn sub">Think: What signals exist?</div><div class="fa">→</div>
+        <div class="fn main">Enrich API</div><div class="fa">→</div>
+        <div class="fn sub">Think: Score = 87/100</div><div class="fa">→</div>
+        <div class="fn main">Route to AE</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Signals used:</strong> Company size, tech stack, job title seniority, intent keywords, website visits, email opens</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why ReAct:</strong> Each scoring decision requires checking live data (Clearbit, LinkedIn, CRM history) and reasoning about the combination — not a static formula</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Salesforce, HubSpot, Clearbit, Outreach</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot fill"></div><div class="cb-dot empty"></div></div>
+        <span class="impact-badge impact-high">High ROI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Email Drafting - Reflection -->
+  <div class="card t-blue" data-cat="sales">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">✉️</div>
+        <div class="card-meta">
+          <h3>Personalized Outreach Drafting</h3>
+          <span class="pattern-tag">🔄 Reflection</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Sales</div>
+      <div class="uc-title">Claude drafts a hyper-personalized cold email, critiques its own tone & relevance, rewrites it, then checks against brand voice guidelines before handing to rep.</div>
+      <div class="flow">
+        <div class="fn main">Draft v1</div><div class="fa">→</div>
+        <div class="fn sub">Self-critique</div><div class="fa">→</div>
+        <div class="fn main">Revise</div><div class="fa">→</div>
+        <div class="fn sub">Brand check</div><div class="fa">→</div>
+        <div class="fn main">Final Email</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Critique dimensions:</strong> Personalization depth, call-to-action clarity, length, spam-trigger words, tone match</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why Reflection:</strong> First drafts of AI emails are generic. Self-critique loop catches vague openers and weak value props before human review</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Outreach, Salesloft, Gmail, LinkedIn Sales Nav</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot fill"></div><div class="cb-dot empty"></div></div>
+        <span class="impact-badge impact-high">High ROI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Support Triage - Routing -->
+  <div class="card t-orange" data-cat="support">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">🎧</div>
+        <div class="card-meta">
+          <h3>Support Ticket Triage & Routing</h3>
+          <span class="pattern-tag">🚦 Routing</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Support</div>
+      <div class="uc-title">Incoming support tickets are classified by intent, urgency, and customer tier — then routed to the right queue, team, or automated handler instantly.</div>
+      <div class="flow">
+        <div class="fn main">Ticket In</div><div class="fa">→</div>
+        <div class="fn sub">Classify intent</div><div class="fa">→</div>
+        <div class="fn main">Router</div><div class="fa">→</div>
+        <div class="fn sub">Billing / Tech / Churn</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Classification signals:</strong> Sentiment, keywords, account tier (MRR), product area, open ticket history, SLA tier</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why Routing:</strong> Support volume is high and heterogeneous. A single Claude router model dispatches to specialized handlers — billing agent, tech agent, churn-risk agent — far better than keyword rules</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Zendesk, Intercom, Freshdesk, Salesforce Service Cloud</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot empty"></div><div class="cb-dot empty"></div></div>
+        <span class="impact-badge impact-crit">Critical Ops</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Deal Research - RAG -->
+  <div class="card t-teal" data-cat="sales analytics">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">🔎</div>
+        <div class="card-meta">
+          <h3>Deal & Account Intelligence</h3>
+          <span class="pattern-tag">📚 RAG</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Sales · Analytics</div>
+      <div class="uc-title">Before a sales call, Claude retrieves all past interactions, notes, emails, and support tickets for an account and synthesizes a pre-call briefing in seconds.</div>
+      <div class="flow">
+        <div class="fn main">Account ID</div><div class="fa">→</div>
+        <div class="fn sub">Vector search</div><div class="fa">→</div>
+        <div class="fn main">Top-K docs</div><div class="fa">→</div>
+        <div class="fn sub">Synthesize</div><div class="fa">→</div>
+        <div class="fn main">Briefing</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Knowledge sources:</strong> CRM notes, email threads, call transcripts, support tickets, contract docs, LinkedIn activity</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why RAG:</strong> CRM data is too dynamic and voluminous to bake into model weights. RAG retrieves only what's relevant for each specific account at call time</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Salesforce, Gong, Chorus, Google Drive, Pinecone</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot fill"></div><div class="cb-dot empty"></div></div>
+        <span class="impact-badge impact-high">High ROI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Churn Prediction - Planning + Multi-Agent -->
+  <div class="card t-pink" data-cat="analytics ops">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">🚨</div>
+        <div class="card-meta">
+          <h3>Churn Risk Detection & Response</h3>
+          <span class="pattern-tag">🕸️ Multi-Agent</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Analytics · Ops</div>
+      <div class="uc-title">A health-monitoring agent watches usage signals daily. When churn risk spikes, it spawns a save-play agent that drafts retention offers and schedules outreach.</div>
+      <div class="flow">
+        <div class="fn main">Monitor Agent</div><div class="fa">→</div>
+        <div class="fn sub">Risk = HIGH</div><div class="fa">→</div>
+        <div class="fn main">Save-Play Agent</div><div class="fa">→</div>
+        <div class="fn sub">Draft offer</div><div class="fa">→</div>
+        <div class="fn main">CSM Alert</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Risk signals:</strong> Login frequency drop, feature usage decline, support spike, NPS drop, contract renewal proximity</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why Multi-Agent:</strong> Detection and response are distinct domains. Separating them means the monitor runs continuously while the save-play agent focuses only on at-risk accounts</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Mixpanel, Segment, Gainsight, Salesforce, Slack</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot fill"></div><div class="cb-dot fill"></div></div>
+        <span class="impact-badge impact-crit">Critical Ops</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Campaign Personalization - Parallelization -->
+  <div class="card t-green" data-cat="marketing">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">📣</div>
+        <div class="card-meta">
+          <h3>Hyper-Personalized Campaigns</h3>
+          <span class="pattern-tag">⚡ Parallelization</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Marketing</div>
+      <div class="uc-title">For a 10,000-contact email blast, Claude generates unique subject lines and body copy for each segment simultaneously — not sequentially — cutting generation time by 90%.</div>
+      <div class="flow">
+        <div class="fn main">Segment List</div><div class="fa">→</div>
+        <div class="fn sub">Split into batches</div><div class="fa">→</div>
+        <div class="fn main">N parallel agents</div><div class="fa">→</div>
+        <div class="fn sub">Merge</div><div class="fa">→</div>
+        <div class="fn main">Campaign Ready</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Personalization axes:</strong> Industry vertical, persona, deal stage, past purchase, geographic region, preferred channel</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why Parallelization:</strong> Each contact's copy is independent. Running 50 parallel Claude calls instead of 50 sequential ones drops a 30-min job to under 2 minutes</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Marketo, HubSpot Marketing, Braze, Iterable</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot fill"></div><div class="cb-dot empty"></div></div>
+        <span class="impact-badge impact-high">High ROI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Auto CRM Updates - Tool Use -->
+  <div class="card t-purple" data-cat="ops sales">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">🔧</div>
+        <div class="card-meta">
+          <h3>Automatic CRM Data Entry</h3>
+          <span class="pattern-tag">🔧 Tool Use</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Ops · Sales</div>
+      <div class="uc-title">After every sales call, Claude reads the transcript, extracts structured data (next steps, objections, decision timeline), and updates the CRM fields — zero manual input.</div>
+      <div class="flow">
+        <div class="fn main">Call Transcript</div><div class="fa">→</div>
+        <div class="fn sub">Extract entities</div><div class="fa">→</div>
+        <div class="fn main">crm_update()</div><div class="fa">→</div>
+        <div class="fn sub">task_create()</div><div class="fa">→</div>
+        <div class="fn main">Done ✓</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Extracted fields:</strong> Deal stage, next steps, competitor mentions, budget signals, decision makers, follow-up dates</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why Tool Use:</strong> Claude directly calls CRM APIs (Salesforce SOQL, HubSpot REST) — no middleware needed. Each extraction maps to a specific tool with typed parameters</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Gong, Chorus, Salesforce, HubSpot, Notion</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot empty"></div><div class="cb-dot empty"></div></div>
+        <span class="impact-badge impact-high">High ROI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Sales Forecasting - CoT -->
+  <div class="card t-blue" data-cat="analytics">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">📊</div>
+        <div class="card-meta">
+          <h3>Pipeline & Forecast Analysis</h3>
+          <span class="pattern-tag">🧠 Chain-of-Thought</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Analytics</div>
+      <div class="uc-title">Claude analyzes a sales pipeline with step-by-step reasoning — examining deal age, historical close rates, rep performance, and seasonality before delivering a weighted forecast with confidence intervals.</div>
+      <div class="flow">
+        <div class="fn main">Pipeline Data</div><div class="fa">→</div>
+        <div class="fn sub">Step 1: Historicals</div><div class="fa">→</div>
+        <div class="fn sub">Step 2: Risk flags</div><div class="fa">→</div>
+        <div class="fn sub">Step 3: Seasonality</div><div class="fa">→</div>
+        <div class="fn main">Forecast</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Reasoning factors:</strong> Days in stage, last activity date, rep win-rate, industry seasonality, deal size vs. average, number of stakeholders</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why CoT:</strong> Forecasting is multi-factorial. CoT forces Claude to surface each assumption explicitly — giving managers an auditable reasoning trail, not just a number</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Salesforce, Clari, Boostup, Tableau</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot fill"></div><div class="cb-dot empty"></div></div>
+        <span class="impact-badge impact-high">High ROI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. Contract Review - Planning -->
+  <div class="card t-orange" data-cat="ops">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">📄</div>
+        <div class="card-meta">
+          <h3>Contract & Proposal Generation</h3>
+          <span class="pattern-tag">🗺️ Planning</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Ops</div>
+      <div class="uc-title">Claude plans a full contract or proposal as a structured sequence — research → outline → draft sections → legal review → formatting — then executes each step systematically.</div>
+      <div class="flow">
+        <div class="fn main">Deal Context</div><div class="fa">→</div>
+        <div class="fn sub">Plan: 5 steps</div><div class="fa">→</div>
+        <div class="fn main">Draft §1…§5</div><div class="fa">→</div>
+        <div class="fn sub">Review gate</div><div class="fa">→</div>
+        <div class="fn main">Final Doc</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Plan steps:</strong> (1) Extract deal terms, (2) Select template, (3) Draft clauses, (4) Flag non-standard terms, (5) Format & export to PDF/DocuSign</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why Planning:</strong> Contract generation is a long, ordered workflow where each step depends on the previous. A planner ensures nothing is skipped and allows replanning if terms change mid-draft</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> DocuSign, Ironclad, Salesforce CPQ, Google Docs</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot fill"></div><div class="cb-dot fill"></div></div>
+        <span class="impact-badge impact-med">Medium ROI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. Escalation - HITL -->
+  <div class="card t-red" data-cat="support ops">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">🛑</div>
+        <div class="card-meta">
+          <h3>Escalation & Refund Approvals</h3>
+          <span class="pattern-tag">👤 Human-in-the-Loop</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Support · Ops</div>
+      <div class="uc-title">Claude handles routine support autonomously but pauses and escalates to a human before issuing refunds above a threshold, changing account terms, or sending legal communications.</div>
+      <div class="flow">
+        <div class="fn main">Support Case</div><div class="fa">→</div>
+        <div class="fn sub">Auto-resolve?</div><div class="fa">→</div>
+        <div class="fn main">⚠️ Refund > $500</div><div class="fa">→</div>
+        <div class="fn sub">Human approval</div><div class="fa">→</div>
+        <div class="fn main">Execute</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Escalation triggers:</strong> Refund amount, account tier (Enterprise), legal/compliance language, sentiment = furious, repeat contact >3×, contract modification</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why HITL:</strong> Irreversible financial and legal actions require human accountability. HITL lets Claude handle 80% of volume autonomously while keeping humans for the 20% that matter most</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Zendesk, Stripe, Slack (approval bots), Salesforce</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot fill"></div><div class="cb-dot empty"></div></div>
+        <span class="impact-badge impact-crit">Risk Control</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. Competitive Battle Cards - Prompt Chaining -->
+  <div class="card t-teal" data-cat="sales marketing">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">⚔️</div>
+        <div class="card-meta">
+          <h3>Competitive Battle Card Generation</h3>
+          <span class="pattern-tag">🔗 Prompt Chaining</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Sales · Marketing</div>
+      <div class="uc-title">Claude runs a deterministic chain: research competitor → extract differentiators → map to your product strengths → format battle card → push to sales enablement tool.</div>
+      <div class="flow">
+        <div class="fn main">Competitor Name</div><div class="fa">→</div>
+        <div class="fn sub">Research prompt</div><div class="fa">→</div>
+        <div class="fn sub">Differentiation prompt</div><div class="fa">→</div>
+        <div class="fn sub">Format prompt</div><div class="fa">→</div>
+        <div class="fn main">Battle Card</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Chain steps:</strong> (1) Scrape/retrieve competitor data, (2) Identify weaknesses, (3) Map to your wins, (4) Suggest objection-handling scripts, (5) Output structured card</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why Prompt Chaining:</strong> Each step needs full focus — a single mega-prompt produces muddy output. Chains let each stage optimize for its specific transformation</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Klue, Crayon, Highspot, Salesforce, Notion</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot empty"></div><div class="cb-dot empty"></div></div>
+        <span class="impact-badge impact-med">Medium ROI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. Full Prospect Research - Multi-Agent -->
+  <div class="card t-green" data-cat="sales analytics">
+    <div class="card-top">
+      <div class="card-header">
+        <div class="card-icon">🕵️</div>
+        <div class="card-meta">
+          <h3>360° Prospect Research Agent</h3>
+          <span class="pattern-tag">🕸️ Multi-Agent + ReAct</span>
+        </div>
+      </div>
+      <div class="uc-label">Use Case · Sales · Analytics</div>
+      <div class="uc-title">An orchestrator dispatches sub-agents to research a prospect in parallel — one scrapes news, one checks LinkedIn, one pulls financials, one reviews tech stack — then synthesizes into a unified dossier.</div>
+      <div class="flow">
+        <div class="fn main">Company Name</div><div class="fa">→</div>
+        <div class="fn sub">Orchestrator</div><div class="fa">→</div>
+        <div class="fn main">News Agent</div><div class="fa">+</div>
+        <div class="fn main">LinkedIn Agent</div><div class="fa">+</div>
+        <div class="fn main">Tech Agent</div><div class="fa">→</div>
+        <div class="fn sub">Synthesize</div><div class="fa">→</div>
+        <div class="fn main">Dossier</div>
+      </div>
+      <div class="detail-row"><span class="dr-icon">🔍</span><div class="dr-text"><strong>Sub-agents:</strong> News & PR monitor, LinkedIn org-chart builder, BuiltWith tech stack extractor, G2/Capterra review analyzer, funding/financials puller</div></div>
+      <div class="detail-row"><span class="dr-icon">⚡</span><div class="dr-text"><strong>Why Multi-Agent + ReAct:</strong> Each research domain requires its own tool set and reasoning loop. Parallelizing them cuts research from 45 minutes to under 3 minutes per prospect</div></div>
+      <div class="detail-row"><span class="dr-icon">🔗</span><div class="dr-text"><strong>Integrations:</strong> Apollo, ZoomInfo, BuiltWith, Crunchbase, Salesforce</div></div>
+    </div>
+    <div class="card-bottom">
+      <div class="bottom-row">
+        <div class="complexity-bar"><span class="cb-label">Complexity</span><div class="cb-dot fill"></div><div class="cb-dot fill"></div><div class="cb-dot fill"></div></div>
+        <span class="impact-badge impact-high">High ROI</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function filter(cat, btn) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.card').forEach(c => {
+    if (cat === 'all') { c.classList.remove('hidden'); return; }
+    const cats = c.dataset.cat || '';
+    c.classList.toggle('hidden', !cats.includes(cat));
+  });
+}
+</script>
+</body>
+</html>
